@@ -4,6 +4,7 @@ import DiscordProvider from 'next-auth/providers/discord'
 import BattleNet from "next-auth/providers/battlenet";
 
 const handler = NextAuth({
+    secret: process.env.SECRET,
     providers: [
         DiscordProvider({
             clientId: process.env.DISCORD_ID!,
