@@ -1,10 +1,11 @@
 'use client'
 import React from "react";
-import {Avatar, Dropdown, Navbar} from "flowbite-react";
-import Link from "next/link";
+import {Avatar, Button, Dropdown, Navbar} from "flowbite-react";
+import {signIn, signOut, useSession} from "next-auth/react";
 
 export function NavBar() {
-    const session = false;
+    const session = useSession();
+    console.log(session);
     return (
         <Navbar fluid rounded>
             <Navbar.Brand href="/">
@@ -13,29 +14,26 @@ export function NavBar() {
                 </span>
             </Navbar.Brand>
             <div className="flex md:order-2">
-                {session ? <Dropdown inline label={<Avatar alt="User settings" img="/res/images/avatar.png" rounded/>}>
-                    <Dropdown.Header>
+                {!!session.data ?
+                    <Dropdown inline label={<Avatar alt="User settings" img={session.data.user?.image!} rounded/>}>
+                        <Dropdown.Header>
                         <span className="block text-sm">
-                            Bonnie Green
+                            {session.data.user?.name}
                         </span>
-                        <span className="block truncate text-sm font-medium">
-                            name@flowbite.com
+                            <span className="block truncate text-sm font-medium">
+                            {session.data.user?.email}
                         </span>
-                    </Dropdown.Header>
-                    <Dropdown.Item>
-                        Dashboard
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                        Settings
-                    </Dropdown.Item>
-                    <Dropdown.Item>
-                        Earnings
-                    </Dropdown.Item>
-                    <Dropdown.Divider/>
-                    <Dropdown.Item>
-                        Sign out
-                    </Dropdown.Item>
-                </Dropdown> : <Link href={"/login"}>Login</Link>}
+                        </Dropdown.Header>
+                        <Dropdown.Item>
+                            Dashboard
+                        </Dropdown.Item>
+                        <Dropdown.Divider/>
+                        <Dropdown.Item onClick={() => signOut()}>
+                            Sign out
+                        </Dropdown.Item>
+                    </Dropdown> :
+                    <Button onClick={() => signIn()}>Login / Register</Button>
+                }
             </div>
         </Navbar>
     );
